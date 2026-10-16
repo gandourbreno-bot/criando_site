@@ -75,6 +75,45 @@
       overflow-x: auto;
     }
 
+    #formCadastro {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+#formCadastro[hidden] {
+  display: none;
+}
+
+#formCadastro label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: bold;
+}
+
+#formCadastro input {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#formCadastro h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+#formCadastro select {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 15px;
+  background: white;
+}    
+    
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -126,15 +165,19 @@
       Consulta de militares cadastrados
     </p>
 
-    <div class="barra">
-      <input
-        type="search"
-        id="pesquisa"
-        placeholder="Pesquisar por nome ou posto..."
-        aria-label="Pesquisar militares"
-      >
+   <div class="barra">
+    <input
+    type="search"
+    id="pesquisa"
+    placeholder="Pesquisar por nome ou posto..."
+    aria-label="Pesquisar militares"
+    >
 
-      <button id="atualizar">Atualizar</button>
+    <button id="atualizar" type="button">Atualizar</button>
+
+    <button id="abrirCadastro" type="button">
+    + Incluir militar
+    </button>
     </div>
 
     <p id="mensagem" role="status">Carregando dados...</p>
@@ -155,6 +198,38 @@
     <p class="contador" id="contador"></p>
   </main>
 
+<form id="formCadastro" hidden>
+  <h2>Incluir militar</h2>
+
+  <label for="novoNome">Nome de guerra</label>
+  <input
+    type="text"
+    id="novoNome"
+    maxlength="100"
+    required
+    placeholder="Digite o nome de guerra"
+  >
+
+  <label for="novoSaram">SARAM</label>
+  <input
+    type="text"
+    id="novoSaram"
+    required
+    placeholder="Digite o SARAM"
+  >
+
+  <label for="novoPosto">Posto/Graduação</label>
+  <select id="novoPosto" required>
+    <option value="">Carregando opções...</option>
+  </select>
+
+  <div class="barra">
+    <button type="submit" id="salvarMilitar">Salvar</button>
+    <button type="button" id="cancelarCadastro">Cancelar</button>
+  </div>
+</form>
+
+  
   <!-- Biblioteca oficial do Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -209,6 +284,37 @@
 }
     }
 
+    async function carregarPostos() {
+  const select = document.getElementById("novoPosto");
+
+  select.replaceChildren(
+    new Option("Carregando opções...", "")
+  );
+
+  const { data, error } = await supabaseClient
+    .from("posto")
+    .select("id, Posto_grad")
+    .order("Posto_grad");
+
+  if (error) {
+    console.error("Erro ao carregar postos:", error);
+    select.replaceChildren(
+      new Option("Erro ao carregar postos", "")
+    );
+    return;
+  }
+
+  select.replaceChildren(
+    new Option("Selecione o posto/graduação", "")
+  );
+
+  data.forEach(posto => {
+    select.add(
+      new Option(posto.Posto_grad, String(posto.id))
+    );
+  });
+}
+
     function exibirMilitares() {
       const corpo = document.getElementById("listaMilitares");
       const pesquisa = document
@@ -251,6 +357,69 @@
       .addEventListener("click", carregarMilitares);
 
     carregarMilitares();
+
+  const formCadastro = document.getElementById("formCadastro");
+
+document.getElementById("abrirCadastro")
+  .addEventListener("click", () => {
+    formCadastro.hidden = false;
+    document.getElementById("novoPosto").focus();
+  });
+
+document.getElementById("cancelarCadastro")
+  .addEventListener("click", () => {
+    formCadastro.reset();
+    formCadastro.hidden = true;
+  });
+
+formCadastro.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+
+  const botao = document.getElementById("salvarMilitar");
+  const mensagem = document.getElementById("mensagem");
+
+  const nome = document.getElementById("novoNome").value.trim();
+  const saram = document.getElementById("novoSaram").value.trim();
+  const postoId = document.getElementById("novoPosto").value;
+
+  if (!nome || !saram || !postoId) {
+    mensagem.textContent = "Preencha todos os campos.";
+    return;
+  }
+
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+
+  try {
+    const { error } = await supabaseClient
+      .from("militar")
+      .insert({
+        nome_guerra: nome,
+        saram: saram,
+        posto_grad: Number(postoId)
+      });
+
+    if (error) throw error;
+
+    mensagem.textContent = "Militar cadastrado com sucesso!";
+
+    formCadastro.reset();
+    formCadastro.hidden = true;
+
+    await carregarMilitares();
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar militar:", erro);
+
+    mensagem.textContent =
+      "Erro ao cadastrar: " + erro.message;
+
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Salvar";
+  }
+});
+    
   </script>
 </body>
 </html>
