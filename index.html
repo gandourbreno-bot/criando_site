@@ -284,52 +284,59 @@
 }
     }
 
-    async function carregarPostos() {
+   async function carregarPostos() {
   const select = document.getElementById("novoPosto");
 
+  console.log("Função carregarPostos iniciada.");
+
   select.replaceChildren(
-    new Option("Carregando opções...", "")
+    new Option("Consultando postos...", "")
   );
-  select.disabled = true;
 
   try {
-    const { data, error } = await supabaseClient
+    const resultado = await supabaseClient
       .from("posto")
-      .select("id, Posto_grad")
-      .order("Posto_grad", { ascending: true });
+      .select('id, "Posto_grad"');
 
-    if (error) {
-      console.error("Erro ao consultar tabela posto:", error);
-      throw error;
+    console.log("Resposta completa:", resultado);
+
+    if (resultado.error) {
+      throw resultado.error;
     }
 
-    console.log("Postos retornados pelo Supabase:", data);
+    const postos = resultado.data || [];
 
     select.replaceChildren(
-      new Option(
-        data?.length
-          ? "Selecione o posto/graduação"
-          : "Nenhum posto cadastrado",
-        ""
-      )
+      new Option("Selecione o posto/graduação", "")
     );
 
-    (data || []).forEach(posto => {
+    postos.forEach(posto => {
       select.add(
-        new Option(posto.Posto_grad, String(posto.id))
+        new Option(
+          String(posto.Posto_grad ?? ""),
+          String(posto.id)
+        )
       );
     });
 
+    console.log("Quantidade de postos:", postos.length);
+    console.log("Opções adicionadas:", select.options.length);
+
+    if (postos.length === 0) {
+      select.replaceChildren(
+        new Option("Nenhum posto retornado", "")
+      );
+    }
+
   } catch (erro) {
+    console.error("Falha ao carregar postos:", erro);
+
     select.replaceChildren(
-      new Option("Erro ao carregar postos", "")
+      new Option("Erro ao consultar postos", "")
     );
 
     document.getElementById("mensagem").textContent =
-      "Erro ao carregar postos: " + erro.message;
-
-  } finally {
-    select.disabled = false;
+      "Falha ao carregar postos: " + erro.message;
   }
 }
 
@@ -379,9 +386,23 @@
   const formCadastro = document.getElementById("formCadastro");
 
 document.getElementById("abrirCadastro")
-  .addEventListener("click", () => {
-    formCadastro.hidden = false;
-    document.getElementById("novoPosto").focus();
+  .addEventListener("click", async () => {
+    const form = document.getElementById("formCadastro");
+    const select = document.getElementById("novoPosto");
+
+    form.hidden = false;
+
+    console.log("Botão Incluir militar clicado.");
+    console.log("Iniciando carregamento de postos...");
+
+    await carregarPostos();
+
+    console.log(
+      "Opções existentes no select:",
+      select.options.length
+    );
+
+    document.getElementById("novoNome").focus();
   });
 
 document.getElementById("cancelarCadastro")
