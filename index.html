@@ -197,15 +197,16 @@
 
         exibirMilitares();
 
-      } catch (erro) {
+     } catch (erro) {
         console.error("Erro ao consultar militares:", erro);
 
         mensagem.textContent =
-          " - Erro ao carregar os dados. Verifique o nome da tabela, a URL, a chave e as permissões do Supabase.";
+        "Erro ao carregar os dados: " +
+          (erro.message || "Verifique o Console do navegador.");
 
         corpo.replaceChildren();
-        contador.textContent = "";
-      }
+          contador.textContent = "";
+}
     }
 
     function exibirMilitares() {
