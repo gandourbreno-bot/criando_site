@@ -290,29 +290,47 @@
   select.replaceChildren(
     new Option("Carregando opções...", "")
   );
+  select.disabled = true;
 
-  const { data, error } = await supabaseClient
-    .from("posto")
-    .select("id, Posto_grad")
-    .order("Posto_grad");
+  try {
+    const { data, error } = await supabaseClient
+      .from("posto")
+      .select("id, Posto_grad")
+      .order("Posto_grad", { ascending: true });
 
-  if (error) {
-    console.error("Erro ao carregar postos:", error);
+    if (error) {
+      console.error("Erro ao consultar tabela posto:", error);
+      throw error;
+    }
+
+    console.log("Postos retornados pelo Supabase:", data);
+
+    select.replaceChildren(
+      new Option(
+        data?.length
+          ? "Selecione o posto/graduação"
+          : "Nenhum posto cadastrado",
+        ""
+      )
+    );
+
+    (data || []).forEach(posto => {
+      select.add(
+        new Option(posto.Posto_grad, String(posto.id))
+      );
+    });
+
+  } catch (erro) {
     select.replaceChildren(
       new Option("Erro ao carregar postos", "")
     );
-    return;
+
+    document.getElementById("mensagem").textContent =
+      "Erro ao carregar postos: " + erro.message;
+
+  } finally {
+    select.disabled = false;
   }
-
-  select.replaceChildren(
-    new Option("Selecione o posto/graduação", "")
-  );
-
-  data.forEach(posto => {
-    select.add(
-      new Option(posto.Posto_grad, String(posto.id))
-    );
-  });
 }
 
     function exibirMilitares() {
