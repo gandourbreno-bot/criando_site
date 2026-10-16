@@ -160,7 +160,7 @@
 
   <script>
     // Configure com os dados do seu projeto Supabase
-    const SUPABASE_URL = "https://mqfkmrsanzuczgmuaqmd.supabase.co/rest/v1/";
+    const SUPABASE_URL = "https://mqfkmrsanzuczgmuaqmd.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ek7az2YB6N1D0XFNR8qI7A_9fNoI4Jm";
 
     const supabaseClient = window.supabase.createClient(
@@ -182,10 +182,10 @@
       try {
         // Consulta a tabela e seleciona apenas as duas colunas
         const { data, error } = await supabaseClient
-          .from("Lista de Militares")
-          .select("nome_guerra, posto_grad")
-          .order("posto_grad", { ascending: true })
-          .order("nome_guerra", { ascending: true });
+        .from("lista_de_militares")
+        .select("nome_guerra, posto_grad")
+        .order("posto_grad", { ascending: true })
+        .order("nome_guerra", { ascending: true });
 
         if (error) throw error;
 
