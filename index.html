@@ -1,176 +1,255 @@
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site Minimalista</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Variáveis de Cores */
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #1a1a1a;
-            --text-secondary: #666666;
-            --accent-color: #0070f3; /* Azul clean */
-            --gray-light: #f5f5f7;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <title>Lista de Militares</title>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Header e Navegação */
-        header {
-            padding: 2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-        }
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
 
-        .logo {
-            font-weight: 600;
-            font-size: 1.2rem;
-            letter-spacing: -1px;
-        }
+    .container {
+      max-width: 850px;
+      margin: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px #00000012;
+    }
 
-        nav a {
-            text-decoration: none;
-            color: var(--text-main);
-            margin-left: 2rem;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
+    h1 {
+      margin-top: 0;
+      color: #164e3b;
+      text-align: center;
+    }
 
-        nav a:hover {
-            color: var(--accent-color);
-        }
+    .subtitulo {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 24px;
+    }
 
-        /* Seção Hero */
-        .hero {
-            padding: 8rem 5%;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .barra {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-        }
+    input {
+      flex: 1;
+      min-width: 180px;
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 15px;
+    }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
+    button {
+      padding: 11px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #166534;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-        .btn {
-            display: inline-block;
-            background: var(--text-main);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: transform 0.2s, opacity 0.2s;
-        }
+    button:hover {
+      background: #14532d;
+    }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+    .tabela-container {
+      overflow-x: auto;
+    }
 
-        /* Grid de Conteúdo */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 5rem 5%;
-            background-color: var(--gray-light);
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        .card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            transition: shadow 0.3s;
-        }
+    th, td {
+      padding: 13px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
 
-        .card h3 {
-            margin-bottom: 1rem;
-        }
+    th {
+      background: #166534;
+      color: white;
+    }
 
-        .card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
+    tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
 
-        /* Rodapé */
-        footer {
-            padding: 4rem 5%;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
+    #mensagem {
+      color: #475569;
+      margin: 14px 0;
+    }
 
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            nav { display: none; } /* Simplificação para mobile */
-        }
-    </style>
+    .contador {
+      margin-top: 16px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <main class="container">
+    <h1>Lista de Militares</h1>
 
-    <header>
-        <div class="logo">STUDIO.CORE</div>
-        <nav>
-            <a href="#">Trabalhos</a>
-            <a href="#">Sobre</a>
-            <a href="#">Contato</a>
-        </nav>
-    </header>
+    <p class="subtitulo">
+      Consulta de militares cadastrados
+    </p>
 
-    <section class="hero">
-        <h1>Design que respira e comunica.</h1>
-        <p>Criamos experiências digitais focadas no que realmente importa: a clareza e o impacto do seu conteúdo.</p>
-             <table>
-      <thead>
-        <tr>
-          <th>nome_guerra</th>
-          <th>posto_grad</th>
-        </tr>
-      </thead>
-    </table>
-        
-        <a href="#" class="btn">Começar Projeto</a>
-    </section>
+    <div class="barra">
+      <input
+        type="search"
+        id="pesquisa"
+        placeholder="Pesquisar por nome ou posto..."
+        aria-label="Pesquisar militares"
+      >
 
-    <section class="features">
-        <div class="card">
-            <h3>Interface Intuitiva</h3>
-            <p>Design focado na facilidade de uso, garantindo que o usuário encontre o que precisa em segundos.</p>
-        </div>
-        <div class="card">
-            <h3>Alta Performance</h3>
-            <p>Código limpo e otimizado para que seu site carregue instantaneamente em qualquer dispositivo.</p>
-        </div>
-        <div class="
+      <button id="atualizar">Atualizar</button>
+    </div>
+
+    <p id="mensagem" role="status">Carregando dados...</p>
+
+    <div class="tabela-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Posto/Graduação</th>
+            <th>Nome de Guerra</th>
+          </tr>
+        </thead>
+
+        <tbody id="listaMilitares"></tbody>
+      </table>
+    </div>
+
+    <p class="contador" id="contador"></p>
+  </main>
+
+  <!-- Biblioteca oficial do Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Configure com os dados do seu projeto Supabase
+    const SUPABASE_URL = "https://mqfkmrsanzuczgmuaqmd.supabase.co/rest/v1/";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xZmttcnNhbnp1Y3pnbXVhcW1kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDg1MzEyMywiZXhwIjoyMTA2NDI5MTIzfQ.5yLLYjWI7w-cuLo1B3ku7rscfNcUKVtZpJyBrda5xnk";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    let militares = [];
+
+    async function carregarMilitares() {
+      const mensagem = document.getElementById("mensagem");
+      const corpo = document.getElementById("listaMilitares");
+      const contador = document.getElementById("contador");
+
+      mensagem.textContent = "Carregando dados...";
+      corpo.replaceChildren();
+      contador.textContent = "";
+
+      try {
+        // Consulta a tabela e seleciona apenas as duas colunas
+        const { data, error } = await supabaseClient
+          .from("Lista de Militares")
+          .select("nome_guerra, posto_grad")
+          .order("posto_grad", { ascending: true })
+          .order("nome_guerra", { ascending: true });
+
+        if (error) throw error;
+
+        militares = data || [];
+
+        mensagem.textContent = militares.length
+          ? "Dados carregados com sucesso."
+          : "Nenhum militar encontrado.";
+
+        exibirMilitares();
+
+      } catch (erro) {
+        console.error("Erro ao consultar militares:", erro);
+
+        mensagem.textContent =
+          "Erro ao carregar os dados. Verifique o nome da tabela, a URL, a chave e as permissões do Supabase.";
+
+        corpo.replaceChildren();
+        contador.textContent = "";
+      }
+    }
+
+    function exibirMilitares() {
+      const corpo = document.getElementById("listaMilitares");
+      const pesquisa = document
+        .getElementById("pesquisa")
+        .value.trim()
+        .toLocaleLowerCase("pt-BR");
+
+      corpo.replaceChildren();
+
+      const filtrados = militares.filter(militar => {
+        const nome = String(militar.nome_guerra || "")
+          .toLocaleLowerCase("pt-BR");
+
+        const posto = String(militar.posto_grad || "")
+          .toLocaleLowerCase("pt-BR");
+
+        return nome.includes(pesquisa) || posto.includes(pesquisa);
+      });
+
+      filtrados.forEach(militar => {
+        const linha = document.createElement("tr");
+
+        [militar.posto_grad, militar.nome_guerra].forEach(valor => {
+          const celula = document.createElement("td");
+          celula.textContent = valor ?? "";
+          linha.appendChild(celula);
+        });
+
+        corpo.appendChild(linha);
+      });
+
+      document.getElementById("contador").textContent =
+        `Exibindo ${filtrados.length} de ${militares.length} militar(es).`;
+    }
+
+    document.getElementById("pesquisa")
+      .addEventListener("input", exibirMilitares);
+
+    document.getElementById("atualizar")
+      .addEventListener("click", carregarMilitares);
+
+    carregarMilitares();
+  </script>
+</body>
+</html>
